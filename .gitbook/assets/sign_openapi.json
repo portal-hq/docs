@@ -1,0 +1,122 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Sign API",
+    "version": "1.0.0",
+    "description": "API for signing transactions or messages."
+  },
+  "servers": [
+    {
+      "url": "http://example.com/api"
+    }
+  ],
+  "paths": {
+    "/sign": {
+      "post": {
+        "summary": "Sign a message or transaction",
+        "description": "This endpoint signs a message or transaction using the provided details.",
+        "operationId": "sign",
+        "tags": [
+          "Sign"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Request body for signing",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "metadataStr": {
+                    "type": "string",
+                    "description": "Metadata in string format including client platform, server version, and performance details."
+                  },
+                  "method": {
+                    "type": "string",
+                    "description": "The signer RPC method, for example `personal_sign` or `eth_signTransaction`."
+                  },
+                  "params": {
+                    "type": "array",
+                    "items": {},
+                    "description": "The RPC method parameters."
+                  },
+                  "rpcUrl": {
+                    "type": "string",
+                    "description": "The node provider RPC URLs, such as Alchemy or Infura."
+                  },
+                  "chainId": {
+                    "type": "string",
+                    "description": "Stringified chainId, for example `5`."
+                  },
+                  "dkgResult": {
+                    "type": "string",
+                    "description": "The MPC share stored from running generate."
+                  }
+                },
+                "required": [
+                  "metadataStr",
+                  "method",
+                  "params",
+                  "rpcUrl",
+                  "chainId",
+                  "dkgResult"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "{\"data\":\"SIGNATURE\",\"error\":{\"code\":0,\"prefix\":\"\",\"error\":\"\",\"message\":\"\"}}"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

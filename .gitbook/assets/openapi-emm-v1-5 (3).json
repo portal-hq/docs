@@ -1,0 +1,448 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "MPC Client API",
+    "version": "1.0.0",
+    "description": "API for managing MPC shares, signing transactions, backup, and recovery."
+  },
+  "servers": [
+    {
+      "url": "https://mpc-client.portalhq.io"
+    }
+  ],
+  "paths": {
+    "/v1/generate": {
+      "post": {
+        "summary": "Generate MPC Shares",
+        "operationId": "generateMpcShare",
+        "tags": [
+          "Generate"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bearer token for authorization with either the `clientApiKey` or `clientSessionToken`."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "metadataStr": {
+                    "type": "string",
+                    "example": "{\"clientPlatform\":\"CLI\",\"mpcServerVersion\":\"v6\",\"optimized\":true,\"performanceId\":\"\"}"
+                  }
+                },
+                "required": [
+                  "metadataStr"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response with MPC shares generated for both SECP256K1 (EVM, etc) and ED25519 (Solana, XRP, etc) curves",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "secp256k1": {
+                      "type": "object",
+                      "properties": {
+                        "share": {
+                          "type": "string"
+                        },
+                        "id" : {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "ed25519": {
+                      "type": "object",
+                      "properties": {
+                        "share": {
+                          "type": "string"
+                        },
+                        "id" : {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "integer"
+                        },
+                        "prefix": {
+                          "type": "string"
+                        },
+                        "error": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "integer"
+                        },
+                        "prefix": {
+                          "type": "string"
+                        },
+                        "error": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sign": {
+      "post": {
+        "summary": "Sign a transaction or message for any EVM chain or Solana",
+        "operationId": "signTransaction",
+        "tags": [
+          "Sign"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bearer token for authorization with either the `clientApiKey` or `clientSessionToken`."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "metadataStr": {
+                    "type": "string",
+                    "description": "Metadata in string format including chainId, client platform, server version, and performance details. NOTE: The chainId needs to be in CAIP-10 format, i.e 'eip155:1' for Ethereum Mainnet."
+                  },
+                  "method": {
+                    "type": "string",
+                    "description": "The signer RPC method, for example `personal_sign` or `eth_signTransaction` or `sol_signTransaction`."
+                  },
+                  "params": {
+                    "type": "array",
+                    "items": {},
+                    "description": "The RPC method parameters."
+                  },
+                  "rpcUrl": {
+                    "type": "string",
+                    "description": "The node provider RPC URLs, such as Alchemy or Infura."
+                  },
+                  "chainId": {
+                    "type": "string",
+                    "description": "Stringified chainId, for example `5`."
+                  },
+                  "share": {
+                    "type": "string",
+                    "description": "The MPC share stored from running generate but for a given curve. You will need to pull out the share for your respective curve."
+                  }
+                },
+                "required": [
+                  "metadataStr",
+                  "method",
+                  "params",
+                  "rpcUrl",
+                  "chainId",
+                  "dkgResult"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful signing operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "integer"
+                        },
+                        "prefix": {
+                          "type": "string"
+                        },
+                        "error": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/backup": {
+      "post": {
+        "summary": "Create Backup Shares",
+        "operationId": "createBackupShare",
+        "tags": [
+          "Backup"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bearer token for authorization with either the `clientApiKey` or `clientSessionToken`."
+          }
+        ],
+        "requestBody": {
+          "description": "Create a backup share",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BackupRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Backup created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BackupResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/recover": {
+      "post": {
+        "summary": "Recover account using signing",
+        "operationId": "recoverSigning",
+        "tags": [
+          "Recover"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bearer token for authorization with either the `clientApiKey` or `clientSessionToken`."
+          }
+        ],
+        "requestBody": {
+          "description": "Request body for recovering signing",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecoverRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully recovered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecoverResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "CLIENT-API-KEY"
+      }
+    },
+    "schemas": {
+      "BackupRequest": {
+        "type": "object",
+        "properties": {
+          "metadataStr": {
+            "type": "string"
+          },
+          "generateResponse" : {
+            "type": "string",
+            "description": "This is the stringified response from the generate endpoint."
+          }
+        },
+        "required": [
+          "metadataStr",
+          "generateResponse"
+        ]
+      },
+      "BackupResponse": {
+        "type": "object",
+        "properties": {
+          "secp256k1": {
+            "type": "object",
+            "properties": {
+              "share": {
+                "type": "string"
+              },
+              "id" : {
+                "type": "string"
+              }
+            }
+          },
+          "ed25519": {
+            "type": "object",
+            "properties": {
+              "share": {
+                "type": "string"
+              },
+              "id" : {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "RecoverRequest": {
+        "type": "object",
+        "properties": {
+          "metadataStr": {
+            "type": "string"
+          },
+          "backupResponse": {
+            "type": "string",
+            "description": "This is the stringified response from the backup endpoint."
+          }
+        },
+        "required": [
+          "metadataStr",
+          "backupResponse"
+        ]
+      },
+      "RecoverResponse": {
+        "type": "object",
+        "properties": {
+          "secp256k1": {
+            "type": "object",
+            "properties": {
+              "share": {
+                "type": "string"
+              },
+              "id" : {
+                "type": "string"
+              }
+            }
+          },
+          "ed25519": {
+            "type": "object",
+            "properties": {
+              "share": {
+                "type": "string"
+              },
+              "id" : {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

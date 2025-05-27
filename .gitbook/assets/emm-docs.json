@@ -1,0 +1,441 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "MPC Client API",
+    "version": "1.0.0",
+    "description": "API for managing MPC shares, signing transactions, backup, and recovery."
+  },
+  "servers": [
+    {
+      "url": "https://mpc-client.portalhq.io"
+    }
+  ],
+  "paths": {
+    "/v1/generate": {
+      "post": {
+        "summary": "Generates MPC shares for both SECP256K1 (EVM, etc) and ED25519 (Solana, XRP, etc) curves.",
+        "operationId": "generateMpcShare",
+        "tags": [
+          "Generate"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bearer token for authorization with either the `clientApiKey` or `clientSessionToken`."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response with MPC shares generated for both SECP256K1 (EVM, etc) and ED25519 (Solana, XRP, etc) curves.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "secp256k1": {
+                      "type": "object",
+                      "properties": {
+                        "share": {
+                          "type": "string",
+                          "description": "A stringified JSON blob representing the signing share.",
+                "example": "eyJjbGllbnRJZCI6IiIsImJhY2t1cFNoYXJlUGFpcklkIjoiIiwic2lnbmluZ1NoYXJlUGFpcklkIjoiY2x2bzFrdWtwMGNwbnM2MTV1dDIyNjYycCIsInNoYXJlIjoiMzQyNjIxMDk5NDc0MDY3MzY0Nzc4NDkzNDk1MTY5NjY4ODAwMTQ1NDE0NjE4MTAzNDk3NDQ1NTY4NTM5NjkwMTczNzQ2NDUzMTI2OSIsInNzaWQiOiI1SjdmNlBiNS9BSmJ0bUViRDRmVzUwYkxWRmpzNDVEZzNwbS9xOC9JRCtFPSIsInB1YmtleSI6eyJYIjoiNDMzMjU0MTMxNTEyNTYyODkzODU0NjU2MDE3MzkzNjk2ODk2NDE5ODYyMjcyMDE1NzkyMDU3NTYxNDc1OTEwNTMyMDk2MjkzNDQ5MTQiLCJZIjoiOTc5NDczNzIwNDU4MDAzNDMxODU5ODQwMTAzNDgzOTAwNDk3NzE5NjgyNDA4NjkxOTgwMzY3OTYyNzYzMDA3NTc5MzAxNDQyNjI3NCJ9LCJwYXJ0aWFsUHVia2V5Ijp7ImNsaWVudCI6eyJYIjoiNDQ1NTk2NjI1OTYyNDk4NDg4MDgwNjY2Mjk5MTE2NTg5ODgzMzYxMTk1NzEyMDE1NTQ0OTA5NDcwMjMwODA1ODkxNzg1NzY3MzUzNzkiLCJZIjoiNTI0NTk2MzU4NDg4ODMxOTU1NTI3ODg5OTQxNTI5OTQwNDg5MDM3OTM4MTQ0OTM0NDY1MDM1NTQ3MzA1NjU1MTI5NjU5NTkxMDIxMjAifSwic2VydmVyIjp7IlgiOiIxNjQzODgyNDk4MTIzMjUyNzQzNTk3OTU0NjA4Njc3MzAyMjkwMTE5NjY4Mzc3MzA2NzU3NzE5MTY0NDcyNDY5MTQwNjQzNjE3NzkzNSIsIlkiOiI1NzU0Mjg4NzU4MDAxMjUyNDMyODgxNzEwMjQwNDcwMzQxMzE4Mjg3NDIyMDE3MjUwMDU3MDc4MzIwMzk0MTM5...",
+                        },
+                        "id" : {
+                          "type": "string",
+                          "description": "A unique id for the signing share.",
+                          "example": "clu32l6c80083uvz52jokyo3r"
+                        }
+                      }
+                    },
+                    "ed25519": {
+                      "type": "object",
+                      "properties": {
+                        "share": {
+                          "type": "string",
+                          "description": "A stringified JSON blob representing the signing share.",
+                          "example": "eyJjbGllbnRJZCI6IiIsImJhY2t1cFNoYXJlUGFpcklkIjoiIiwic2lnbmluZ1NoYXJlUGFpcklkIjoiY2x2bzFrdWtwMGNwbnM2MTV1dDIyNjYycCIsInNoYXJlIjoiMzQyNjIxMDk5NDc0MDY3MzY0Nzc4NDkzNDk1MTY5NjY4ODAwMTQ1NDE0NjE4MTAzNDk3NDQ1NTY4NTM5NjkwMTczNzQ2NDUzMTI2OSIsInNzaWQiOiI1SjdmNlBiNS9BSmJ0bUViRDRmVzUwYkxWRmpzNDVEZzNwbS9xOC9JRCtFPSIsInB1YmtleSI6eyJYIjoiNDMzMjU0MTMxNTEyNTYyODkzODU0NjU2MDE3MzkzNjk2ODk2NDE5ODYyMjcyMDE1NzkyMDU3NTYxNDc1OTEwNTMyMDk2MjkzNDQ5MTQiLCJZIjoiOTc5NDczNzIwNDU4MDAzNDMxODU5ODQwMTAzNDgzOTAwNDk3NzE5NjgyNDA4NjkxOTgwMzY3OTYyNzYzMDA3NTc5MzAxNDQyNjI3NCJ9LCJwYXJ0aWFsUHVia2V5Ijp7ImNsaWVudCI6eyJYIjoiNDQ1NTk2NjI1OTYyNDk4NDg4MDgwNjY2Mjk5MTE2NTg5ODgzMzYxMTk1NzEyMDE1NTQ0OTA5NDcwMjMwODA1ODkxNzg1NzY3MzUzNzkiLCJZIjoiNTI0NTk2MzU4NDg4ODMxOTU1NTI3ODg5OTQxNTI5OTQwNDg5MDM3OTM4MTQ0OTM0NDY1MDM1NTQ3MzA1NjU1MTI5NjU5NTkxMDIxMjAifSwic2VydmVyIjp7IlgiOiIxNjQzODgyNDk4MTIzMjUyNzQzNTk3OTU0NjA4Njc3MzAyMjkwMTE5NjY4Mzc3MzA2NzU3NzE5MTY0NDcyNDY5MTQwNjQzNjE3NzkzNSIsIlkiOiI1NzU0Mjg4NzU4MDAxMjUyNDMyODgxNzEwMjQwNDcwMzQxMzE4Mjg3NDIyMDE3MjUwMDU3MDc4MzIwMzk0MTM5...",
+                        },
+                        "id" : {
+                          "type": "string",
+                          "description": "A unique id for the signing share.",
+                          "example": "clu32l9310087uvz5u5v9k1ao"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "integer",
+                          "example": "211"
+                        },
+                        "prefix": {
+                          "type": "string",
+                          "example": ""
+                        },
+                        "error": {
+                          "type": "string",
+                          "example": "SIGNING_NETWORK_ERROR"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "There was an error connecting to the network to complete signing."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "integer",
+                          "example": "117"
+                        },
+                        "prefix": {
+                          "type": "string",
+                          "example": ""
+                        },
+                        "error": {
+                          "type": "string",
+                          "example": "SIGNING_PROCESS_ERROR"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Unable to complete signing due to missing or corrupted signing share."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sign": {
+      "post": {
+        "summary": "Sign a transaction or message for any EVM chain or Solana",
+        "operationId": "signTransaction",
+        "tags": [
+          "Sign"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "description": "Bearer token for authorization with either the `clientApiKey` or `clientSessionToken`."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "method": {
+                    "type": "string",
+                    "example": "eth_signTransaction",
+                    "description": "The signer RPC method, for example `personal_sign` or `eth_signTransaction` or `sol_signTransaction`."
+                  },
+                  "params": {
+                    "type": "string",
+                    "example": "[\"0xb60e8dd61c5d32be8058bb8eb970870f07233155\",\"0xd46e8dd67c5d32be8058bb8eb970870f07244567\",\"0x76c0\",\"0x9184e72a000\",\"0x9184e72a\",\"0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675\"]",
+                    "description": "A stringified array of the parameters for the RPC method."
+                  },
+                  "rpcUrl": {
+                    "type": "string",
+                    "example": "https://eth-sepolia.g.alchemy.com/v2/your-api-key",
+                    "description": "The node provider RPC URLs, such as Alchemy or Infura."
+                  },
+                  "chainId": {
+                    "type": "string",
+                    "example": "11155111",
+                    "description": "Stringified EVM chainId. (1 is mainnet, 11155111 is sepolia, etc...)"
+                  },
+                  "share": {
+                    "type": "string",
+                    "example": "{\"clientId\":\"\",\"backupSharePairId\":\"\",\"signingSharePairId\":\"clu32l9310087uvz5u5v9k1ao\",\"share\":\"4726941726011968212441538870546972482303350887092110287737121703439428582796\",\"ssid\":\"PNxZQ37oRf4RmiateaOgAQEOOGJ8uvQBrLolszEEFHM=\",\"pubkey\":{\"X\":\"50979459106106719891446973976322500902617681244755630955662536079409654850117\",\"Y\":\"15000537448737552493349478088191127630893662402822970100657389657383830363936\"},\"partialPubkey\":{\"client\":{\"X\":\"17713318700716562384464290795630735878458872699236765185573332429092635649344\",\"Y\":\"7690287622249488714574587819953863693814728289422283242447954827772427010801\"},\"server\":{\"X\":\"42287166782703034048344625879595476493728657742995479111314960050756448611177\",\"Y\":\"35671913692976273275980666890145986012075814446534213184577098660016537503700\"}},\"allY\":{\"client\":{\"X\":\"23272612801577608807499975942440365875658537559049388646643906601977070821134\",\"Y\":\"52116552455230861360726160476078536571491437649746422112492566790192527285661\"},\"server\":{\"X\":\"31276965115415730815003826660966234743670578180764493383999892731156137664690\",\"Y\":\"42711399199191216060099737017088339055599136402923942060079310115836084507391\"}},\"p\":\"159597077467401739762034085520058327414993143846640948272422258146442288714106952246676543227268317048088510435411054514578273343530147366219047627979652408540067736533621960970785778415362249186297400346013946195482078756388167521130448227463849611691633799347012475874132358079011085563211438756965001939303\",\"q\":\"138053027745759391944658906803272716159875552287898053396210871886170240334450176843076073640659907194981556603492806344675010864838803278829629532172507572137031147549174628136554122167088834828877399923845511297209040892136428189874419531329812901270272897696398487951736933349279701975646809056138689742403\",\"pederson\":{\"client\":{\"n\":\"22032859763749323447449209709848901909395192657257455188520197868803890939348122051199500711620394458597747698412396831208494872154354367686895479589013445685765681939562459321073034707370420808638940180791027693778165077247655787167930279871159764795259399777647550327842656898688511976260487251320872084603151098759734566661109475347330148396373151758873860360637187144543033725451403401014025268042478849192615213894359921248723332936373337986976031419768090340740145785512822803082298734811988299494328838069074249236436972606541581950272758389335874307051529819344524215770732972586412167450229369016328511365109\",\"s\":\"5036648571238817944076080830225657620426135180667450735399588199308309194371914776719855198384262651549505545283313071546935203022068408133233595112644364377497727662170603323908032755567612955867682248320401143272807831539201120872594208101532288612280055763854828094287118404294511854532895744771962929080999064226465693872638907083568656949794215356023515467285037266785600083171266467416006180889532763458929135761695718555786670525233751737689206192027283741064021744059505652386500312735271686742489254302285438939725328447281268570278356893980459009808154749004801792017183937028631540881976615633489518986989\",\"t\":\"6641030361113048007319074397312599356799649035208292417500317524247300789900460607356490704091395244889493165076456372642360828611264296259611994279031323547199696989492323768877573454127908092219567410604996765506978075995793253333359040302991507864546046491917957002913490747355250075465231519421724837863623392480741642569966794421420242757547541949107059566011889578046448634146131123402254440262886788893512588660777990963904409826942869625606462327324487795505282031744709039255221197782092756690627521859507136389668280188568589915228690422647185635132779845807125424402591724119478717960596860296899424203862\"},\"server\":{\"n\":\"22155324447610287797033850422012708290848422450751321576402376023484986604902279475838368354175633907345726040771489742429943067472843100615675003717033311453790781943411207347677021239180977623752613528442276501823549783382976953878962195970013554917832911044959692623807846443110067549021507313632022410244004463039849370229972063829384788584183381705982386580475264711477685478468840080586536604527588305724782543829049241779659573273404836889617319539538994331576675464551864700189526666324093789183042598328719030830479971464827645298825331169342800355250555945680205916426444275653438024597363489728010905012737\",\"s\":\"11222730621464017857368772102865711570457053448632610375841847602488648686984880496675176074161358178373567241333034588274011519269699238429762556263873671617915505312115680428379999781890338844623607419439078926815796769257123829050923585041659111808672419269673521144900561053516475956911052545371399358458171626823411559387242625514202375919996565695069140028341364695172280709843167939210979339308479349655329191333165568590126103642852683937647410136854129897022897922393896358314057566199408742305753764214747741002309308674370653324237669690428754481022027880428889198895523719395273266718115591798126156916901\",\"t\":\"6066634335469751793178547035587993298536893539412456746693631989646697985504146978074801702561842439242816675200367640853520105923903218266755516109631586094734891701509937905742801743130444608193247155011263119901401854077531505509406808690087755723591159539027762047021337617811687223055247962646779876048396857070790888818581336794462100957371121430811629549868601797375422369510648677328341005651616305881605145539052363951077305597944985167841767686462315215840531898587782904425126648116623362990686577361025728675424195386165560287612228302830806474061499205648017115873528358688898298025000086262550688357809\"}},\"bks\":{\"client\":{\"X\":\"3774534545163537373873105018895372926519131760430046833223356942924422027992\",\"Rank\":0},\"server\":{\"X\":\"4279468700374992510287068307361845274696052498400697516430492109637446362437\",\"Rank\":0}}}",
+                    "description": "The MPC share stored from running generate but for a given curve. You will need to pull out the share for your respective curve."
+                  }
+                },
+                "required": [
+                  "method",
+                  "params",
+                  "rpcUrl",
+                  "chainId",
+                  "dkgResult"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful signing operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "string",
+                      "description": "The response from the signing request. If the request is expected to submit to a chain this is the transaction hash, else its the raw signature.",
+                      "example": "0xf7a6a07fa599db56fca50fa1202670b59054e7ed452ea57b3f5b43148b8bdb165beb3a4b0fd532162a1f0fd475de1a9ecd07c95186f7a0856ce1bffa45e3acc91b"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/backup": {
+      "post": {
+        "summary": "Create Backup Shares",
+        "operationId": "createBackupShare",
+        "tags": [
+          "Backup"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bearer token for authorization with either the `clientApiKey` or `clientSessionToken`."
+          }
+        ],
+        "requestBody": {
+          "description": "Create a backup share",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BackupRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Backup created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BackupResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/recover": {
+      "post": {
+        "summary": "Recover account using signing",
+        "operationId": "recoverSigning",
+        "tags": [
+          "Recover"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bearer token for authorization with either the `clientApiKey` or `clientSessionToken`."
+          }
+        ],
+        "requestBody": {
+          "description": "Request body for recovering signing",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecoverRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully recovered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecoverResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "CLIENT-API-KEY"
+      }
+    },
+    "schemas": {
+      "BackupRequest": {
+        "type": "object",
+        "properties": {
+          "generateResponse" : {
+            "type": "string",
+            "description": "A stringified JSON blob representing the signing share.",
+            "example": "eyJjbGllbnRJZCI6IiIsImJhY2t1cFNoYXJlUGFpcklkIjoiIiwic2lnbmluZ1NoYXJlUGFpcklkIjoiY2x2bzFrdWtwMGNwbnM2MTV1dDIyNjYycCIsInNoYXJlIjoiMzQyNjIxMDk5NDc0MDY3MzY0Nzc4NDkzNDk1MTY5NjY4ODAwMTQ1NDE0NjE4MTAzNDk3NDQ1NTY4NTM5NjkwMTczNzQ2NDUzMTI2OSIsInNzaWQiOiI1SjdmNlBiNS9BSmJ0bUViRDRmVzUwYkxWRmpzNDVEZzNwbS9xOC9JRCtFPSIsInB1YmtleSI6eyJYIjoiNDMzMjU0MTMxNTEyNTYyODkzODU0NjU2MDE3MzkzNjk2ODk2NDE5ODYyMjcyMDE1NzkyMDU3NTYxNDc1OTEwNTMyMDk2MjkzNDQ5MTQiLCJZIjoiOTc5NDczNzIwNDU4MDAzNDMxODU5ODQwMTAzNDgzOTAwNDk3NzE5NjgyNDA4NjkxOTgwMzY3OTYyNzYzMDA3NTc5MzAxNDQyNjI3NCJ9LCJwYXJ0aWFsUHVia2V5Ijp7ImNsaWVudCI6eyJYIjoiNDQ1NTk2NjI1OTYyNDk4NDg4MDgwNjY2Mjk5MTE2NTg5ODgzMzYxMTk1NzEyMDE1NTQ0OTA5NDcwMjMwODA1ODkxNzg1NzY3MzUzNzkiLCJZIjoiNTI0NTk2MzU4NDg4ODMxOTU1NTI3ODg5OTQxNTI5OTQwNDg5MDM3OTM4MTQ0OTM0NDY1MDM1NTQ3MzA1NjU1MTI5NjU5NTkxMDIxMjAifSwic2VydmVyIjp7IlgiOiIxNjQzODgyNDk4MTIzMjUyNzQzNTk3OTU0NjA4Njc3MzAyMjkwMTE5NjY4Mzc3MzA2NzU3NzE5MTY0NDcyNDY5MTQwNjQzNjE3NzkzNSIsIlkiOiI1NzU0Mjg4NzU4MDAxMjUyNDMyODgxNzEwMjQwNDcwMzQxMzE4Mjg3NDIyMDE3MjUwMDU3MDc4MzIwMzk0MTM5...",
+          }
+        },
+        "required": [
+          "generateResponse"
+        ]
+      },
+      "BackupResponse": {
+          "type": "object",
+          "properties": {
+            "secp256k1": {
+              "type": "object",
+              "properties": {
+                "share": {
+                  "type": "string",
+                  "description": "A stringified JSON blob representing the SECP256K1 backup share.",
+                  "example": "eyJjbGllbnRJZCI6IiIsImJhY2t1cFNoYXJlUGFpcklkIjoiIiwic2lnbmluZ1NoYXJlUGFpcklkIjoiY2x2bzFrdWtwMGNwbnM2MTV1dDIyNjYycCIsInNoYXJlIjoiMzQyNjIxMDk5NDc0MDY3MzY0Nzc4NDkzNDk1MTY5NjY4ODAwMTQ1NDE0NjE4MTAzNDk3NDQ1NTY4NTM5NjkwMTczNzQ2NDUzMTI2OSIsInNzaWQiOiI1SjdmNlBiNS9BSmJ0bUViRDRmVzUwYkxWRmpzNDVEZzNwbS9xOC9JRCtFPSIsInB1YmtleSI6eyJYIjoiNDMzMjU0MTMxNTEyNTYyODkzODU0NjU2MDE3MzkzNjk2ODk2NDE5ODYyMjcyMDE1NzkyMDU3NTYxNDc1OTEwNTMyMDk2MjkzNDQ5MTQiLCJZIjoiOTc5NDczNzIwNDU4MDAzNDMxODU5ODQwMTAzNDgzOTAwNDk3NzE5NjgyNDA4NjkxOTgwMzY3OTYyNzYzMDA3NTc5MzAxNDQyNjI3NCJ9LCJwYXJ0aWFsUHVia2V5Ijp7ImNsaWVudCI6eyJYIjoiNDQ1NTk2NjI1OTYyNDk4NDg4MDgwNjY2Mjk5MTE2NTg5ODgzMzYxMTk1NzEyMDE1NTQ0OTA5NDcwMjMwODA1ODkxNzg1NzY3MzUzNzkiLCJZIjoiNTI0NTk2MzU4NDg4ODMxOTU1NTI3ODg5OTQxNTI5OTQwNDg5MDM3OTM4MTQ0OTM0NDY1MDM1NTQ3MzA1NjU1MTI5NjU5NTkxMDIxMjAifSwic2VydmVyIjp7IlgiOiIxNjQzODgyNDk4MTIzMjUyNzQzNTk3OTU0NjA4Njc3MzAyMjkwMTE5NjY4Mzc3MzA2NzU3NzE5MTY0NDcyNDY5MTQwNjQzNjE3NzkzNSIsIlkiOiI1NzU0Mjg4NzU4MDAxMjUyNDMyODgxNzEwMjQwNDcwMzQxMzE4Mjg3NDIyMDE3MjUwMDU3MDc4MzIwMzk0MTM5...",
+                },
+                "id" : {
+                  "type": "string",
+                  "description": "A unique id for the backup share.",
+                  "example": "clu32l6c80083uvz52jokyo3r"
+                }
+              }
+            },
+            "ed25519": {
+              "type": "object",
+              "properties": {
+                "share": {
+                  "type": "string",
+                  "description": "A stringified JSON blob representing the ED25519 backup share.",
+                  "example": "eyJjbGllbnRJZCI6IiIsImJhY2t1cFNoYXJlUGFpcklkIjoiIiwic2lnbmluZ1NoYXJlUGFpcklkIjoiY2x2bzFrdWtwMGNwbnM2MTV1dDIyNjYycCIsInNoYXJlIjoiMzQyNjIxMDk5NDc0MDY3MzY0Nzc4NDkzNDk1MTY5NjY4ODAwMTQ1NDE0NjE4MTAzNDk3NDQ1NTY4NTM5NjkwMTczNzQ2NDUzMTI2OSIsInNzaWQiOiI1SjdmNlBiNS9BSmJ0bUViRDRmVzUwYkxWRmpzNDVEZzNwbS9xOC9JRCtFPSIsInB1YmtleSI6eyJYIjoiNDMzMjU0MTMxNTEyNTYyODkzODU0NjU2MDE3MzkzNjk2ODk2NDE5ODYyMjcyMDE1NzkyMDU3NTYxNDc1OTEwNTMyMDk2MjkzNDQ5MTQiLCJZIjoiOTc5NDczNzIwNDU4MDAzNDMxODU5ODQwMTAzNDgzOTAwNDk3NzE5NjgyNDA4NjkxOTgwMzY3OTYyNzYzMDA3NTc5MzAxNDQyNjI3NCJ9LCJwYXJ0aWFsUHVia2V5Ijp7ImNsaWVudCI6eyJYIjoiNDQ1NTk2NjI1OTYyNDk4NDg4MDgwNjY2Mjk5MTE2NTg5ODgzMzYxMTk1NzEyMDE1NTQ0OTA5NDcwMjMwODA1ODkxNzg1NzY3MzUzNzkiLCJZIjoiNTI0NTk2MzU4NDg4ODMxOTU1NTI3ODg5OTQxNTI5OTQwNDg5MDM3OTM4MTQ0OTM0NDY1MDM1NTQ3MzA1NjU1MTI5NjU5NTkxMDIxMjAifSwic2VydmVyIjp7IlgiOiIxNjQzODgyNDk4MTIzMjUyNzQzNTk3OTU0NjA4Njc3MzAyMjkwMTE5NjY4Mzc3MzA2NzU3NzE5MTY0NDcyNDY5MTQwNjQzNjE3NzkzNSIsIlkiOiI1NzU0Mjg4NzU4MDAxMjUyNDMyODgxNzEwMjQwNDcwMzQxMzE4Mjg3NDIyMDE3MjUwMDU3MDc4MzIwMzk0MTM5...",
+                },
+                "id" : {
+                  "type": "string",
+                  "description": "A unique id for the backupp share.",
+                  "example": "clu32l9310087uvz5u5v9k1ao"
+                }
+              }
+            }
+          }
+      },
+      "RecoverRequest": {
+        "type": "object",
+        "properties": {
+          "backupResponse": {
+            "type": "string",
+            "description": "The stringified response from the backup endpoint.",
+            "example": "eyJjbGllbnRJZCI6IiIsImJhY2t1cFNoYXJlUGFpcklkIjoiIiwic2lnbmluZ1NoYXJlUGFpcklkIjoiY2x2bzFrdWtwMGNwbnM2MTV1dDIyNjYycCIsInNoYXJlIjoiMzQyNjIxMDk5NDc0MDY3MzY0Nzc4NDkzNDk1MTY5NjY4ODAwMTQ1NDE0NjE4MTAzNDk3NDQ1NTY4NTM5NjkwMTczNzQ2NDUzMTI2OSIsInNzaWQiOiI1SjdmNlBiNS9BSmJ0bUViRDRmVzUwYkxWRmpzNDVEZzNwbS9xOC9JRCtFPSIsInB1YmtleSI6eyJYIjoiNDMzMjU0MTMxNTEyNTYyODkzODU0NjU2MDE3MzkzNjk2ODk2NDE5ODYyMjcyMDE1NzkyMDU3NTYxNDc1OTEwNTMyMDk2MjkzNDQ5MTQiLCJZIjoiOTc5NDczNzIwNDU4MDAzNDMxODU5ODQwMTAzNDgzOTAwNDk3NzE5NjgyNDA4NjkxOTgwMzY3OTYyNzYzMDA3NTc5MzAxNDQyNjI3NCJ9LCJwYXJ0aWFsUHVia2V5Ijp7ImNsaWVudCI6eyJYIjoiNDQ1NTk2NjI1OTYyNDk4NDg4MDgwNjY2Mjk5MTE2NTg5ODgzMzYxMTk1NzEyMDE1NTQ0OTA5NDcwMjMwODA1ODkxNzg1NzY3MzUzNzkiLCJZIjoiNTI0NTk2MzU4NDg4ODMxOTU1NTI3ODg5OTQxNTI5OTQwNDg5MDM3OTM4MTQ0OTM0NDY1MDM1NTQ3MzA1NjU1MTI5NjU5NTkxMDIxMjAifSwic2VydmVyIjp7IlgiOiIxNjQzODgyNDk4MTIzMjUyNzQzNTk3OTU0NjA4Njc3MzAyMjkwMTE5NjY4Mzc3MzA2NzU3NzE5MTY0NDcyNDY5MTQwNjQzNjE3NzkzNSIsIlkiOiI1NzU0Mjg4NzU4MDAxMjUyNDMyODgxNzEwMjQwNDcwMzQxMzE4Mjg3NDIyMDE3MjUwMDU3MDc4MzIwMzk0MTM5...",
+          }
+        },
+        "required": [
+          "backupResponse"
+        ]
+      },
+      "RecoverResponse": {
+        "type": "object",
+        "properties": {
+          "secp256k1": {
+            "type": "object",
+            "properties": {
+              "share": {
+                "type": "string",
+                "description": "A stringified JSON blob representing the SECP256K1 signing share.",
+                "example": "eyJjbGllbnRJZCI6IiIsImJhY2t1cFNoYXJlUGFpcklkIjoiIiwic2lnbmluZ1NoYXJlUGFpcklkIjoiY2x2bzFrdWtwMGNwbnM2MTV1dDIyNjYycCIsInNoYXJlIjoiMzQyNjIxMDk5NDc0MDY3MzY0Nzc4NDkzNDk1MTY5NjY4ODAwMTQ1NDE0NjE4MTAzNDk3NDQ1NTY4NTM5NjkwMTczNzQ2NDUzMTI2OSIsInNzaWQiOiI1SjdmNlBiNS9BSmJ0bUViRDRmVzUwYkxWRmpzNDVEZzNwbS9xOC9JRCtFPSIsInB1YmtleSI6eyJYIjoiNDMzMjU0MTMxNTEyNTYyODkzODU0NjU2MDE3MzkzNjk2ODk2NDE5ODYyMjcyMDE1NzkyMDU3NTYxNDc1OTEwNTMyMDk2MjkzNDQ5MTQiLCJZIjoiOTc5NDczNzIwNDU4MDAzNDMxODU5ODQwMTAzNDgzOTAwNDk3NzE5NjgyNDA4NjkxOTgwMzY3OTYyNzYzMDA3NTc5MzAxNDQyNjI3NCJ9LCJwYXJ0aWFsUHVia2V5Ijp7ImNsaWVudCI6eyJYIjoiNDQ1NTk2NjI1OTYyNDk4NDg4MDgwNjY2Mjk5MTE2NTg5ODgzMzYxMTk1NzEyMDE1NTQ0OTA5NDcwMjMwODA1ODkxNzg1NzY3MzUzNzkiLCJZIjoiNTI0NTk2MzU4NDg4ODMxOTU1NTI3ODg5OTQxNTI5OTQwNDg5MDM3OTM4MTQ0OTM0NDY1MDM1NTQ3MzA1NjU1MTI5NjU5NTkxMDIxMjAifSwic2VydmVyIjp7IlgiOiIxNjQzODgyNDk4MTIzMjUyNzQzNTk3OTU0NjA4Njc3MzAyMjkwMTE5NjY4Mzc3MzA2NzU3NzE5MTY0NDcyNDY5MTQwNjQzNjE3NzkzNSIsIlkiOiI1NzU0Mjg4NzU4MDAxMjUyNDMyODgxNzEwMjQwNDcwMzQxMzE4Mjg3NDIyMDE3MjUwMDU3MDc4MzIwMzk0MTM5...",
+              },
+              "id" : {
+                "type": "string",
+                "description": "A unique id for the signing share.",
+                "example": "clu32l9310087uvz5u5v9k1ao"
+              }
+            }
+          },
+          "ed25519": {
+            "type": "object",
+            "properties": {
+              "share": {
+                "type": "string",
+                "description": "A stringified JSON blob representing the ED25519 signing share.",
+                "example": "eyJjbGllbnRJZCI6IiIsImJhY2t1cFNoYXJlUGFpcklkIjoiIiwic2lnbmluZ1NoYXJlUGFpcklkIjoiY2x2bzFrdWtwMGNwbnM2MTV1dDIyNjYycCIsInNoYXJlIjoiMzQyNjIxMDk5NDc0MDY3MzY0Nzc4NDkzNDk1MTY5NjY4ODAwMTQ1NDE0NjE4MTAzNDk3NDQ1NTY4NTM5NjkwMTczNzQ2NDUzMTI2OSIsInNzaWQiOiI1SjdmNlBiNS9BSmJ0bUViRDRmVzUwYkxWRmpzNDVEZzNwbS9xOC9JRCtFPSIsInB1YmtleSI6eyJYIjoiNDMzMjU0MTMxNTEyNTYyODkzODU0NjU2MDE3MzkzNjk2ODk2NDE5ODYyMjcyMDE1NzkyMDU3NTYxNDc1OTEwNTMyMDk2MjkzNDQ5MTQiLCJZIjoiOTc5NDczNzIwNDU4MDAzNDMxODU5ODQwMTAzNDgzOTAwNDk3NzE5NjgyNDA4NjkxOTgwMzY3OTYyNzYzMDA3NTc5MzAxNDQyNjI3NCJ9LCJwYXJ0aWFsUHVia2V5Ijp7ImNsaWVudCI6eyJYIjoiNDQ1NTk2NjI1OTYyNDk4NDg4MDgwNjY2Mjk5MTE2NTg5ODgzMzYxMTk1NzEyMDE1NTQ0OTA5NDcwMjMwODA1ODkxNzg1NzY3MzUzNzkiLCJZIjoiNTI0NTk2MzU4NDg4ODMxOTU1NTI3ODg5OTQxNTI5OTQwNDg5MDM3OTM4MTQ0OTM0NDY1MDM1NTQ3MzA1NjU1MTI5NjU5NTkxMDIxMjAifSwic2VydmVyIjp7IlgiOiIxNjQzODgyNDk4MTIzMjUyNzQzNTk3OTU0NjA4Njc3MzAyMjkwMTE5NjY4Mzc3MzA2NzU3NzE5MTY0NDcyNDY5MTQwNjQzNjE3NzkzNSIsIlkiOiI1NzU0Mjg4NzU4MDAxMjUyNDMyODgxNzEwMjQwNDcwMzQxMzE4Mjg3NDIyMDE3MjUwMDU3MDc4MzIwMzk0MTM5...",
+              },
+              "id" : {
+                "type": "string",
+                "description": "A unique id for the signing share.",
+                "example": "clu32l9310087uvz5u5v9k1ao"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
