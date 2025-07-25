@@ -206,6 +206,6 @@
     * [2023 Releases](support/changelog/past-releases/2023-releases.md)
 * [PYUSD Hackathon Hub](support/pyusd-hackathon-hub.md)
 * [Hackathon Hub](support/hackathon-hub.md)
-* [Celo Hackathon Hub](support/celo-hackathon-hub.md)
+* [MXNB Hackathon Hub](support/mxnb-hackathon-hub.md)
 * [Colosseum Radar Hackathon Hub](support/colosseum-radar-hackathon-hub.md)
 * [Glossary](support/glossary.md)

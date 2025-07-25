@@ -27,18 +27,7 @@ Within the "Security" section, you will find an option to enable Advanced Securi
 
 ## **Transaction Validation**
 
-Once enabled, all `eth_sendTransaction` requests made by your users on supported chains will be validated through Blockaid. They currently support the following chains:
-
-* Ethereum (ChainId: `1`)
-* Optimism (ChainId: `10`)
-* BSC (ChainId: `56`)
-* Polygon (ChainId: `137`)
-* Blast (ChainId: `238`)
-* Base (ChainId: `8453`)
-* Arbitrum (ChainId: `42161`)
-* Avalanche (ChainId: `43114`)
-* Linea (ChainId: `59144`)
-* Zora (ChainId: `7777777`)
+Once enabled, requests made by your users on supported chains will be validated through Blockaid. Portal currently supports transaction validation and simulation on all EVM and Solana chains [that Blockaid supports](https://docs.blockaid.io/reference/supported-chains).
 
 If a transaction is detected as malicious, it will be blocked and an error message will be returned: "Firewall: Transaction is malicious".
 

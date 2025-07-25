@@ -836,9 +836,10 @@ You can find the `walletId`  parameter from the [Get a Single Client](v3-endpoin
 
 #### Body Parameters
 
-| Name       | Type   | Description                           |
-| ---------- | ------ | ------------------------------------- |
-| `walletId` | String | The walletId of the wallet to eject.  |
+| Name                                         | Type                | Description                                                                                 |
+| -------------------------------------------- | ------------------- | ------------------------------------------------------------------------------------------- |
+| `ejectableUntil`                             | String (ISO format) | The time the wallet will no longer be ejectable. Must be a date at least 1 minute from now. |
+| `walletId`<mark style="color:red;">\*</mark> | String              | The walletId of the wallet to eject.                                                        |
 
 #### Example Request
 
@@ -850,6 +851,7 @@ curl --request PATCH \
   --header 'Authorization: Bearer [token]' \
   --header 'Content-Type: application/json' \
   --data '{
+      "ejectableUntil": "2025-06-18T15:23:00.470Z",
       "walletId": "walletId"
 }
 '
@@ -868,7 +870,9 @@ curl --request PATCH \
 
 {% tab title="400: Bad Request" %}
 ```json
-{}
+{
+  "error": "ejectableUntil must be a date must be at least 1 minute from now."
+}
 ```
 {% endtab %}
 
@@ -1151,6 +1155,73 @@ curl --request POST \
     "replaying": ["alertWebhookEventId1"], // The alert webhook events are currently being replayed.
     "failed": ["alertWebhookEventId2"] // The alert webhook events failed to be replayed.
   }
+}
+```
+{% endtab %}
+
+{% tab title="400: Bad Request" %}
+```json
+{}
+```
+{% endtab %}
+
+{% tab title="401: Unauthorized Request" %}
+```json
+{}
+```
+{% endtab %}
+{% endtabs %}
+
+## Gas Sponsorship:
+
+### Get historical gas sponsorship usage by chain
+
+<mark style="color:green;">**`GET`**</mark> `https://api.portalhq.io/api/v3/custodians/me/gas-sponsors/chains/:chainId/usage`
+
+Retrieves historical gas sponsorship usage by chain for your Portal environment.
+
+#### Headers
+
+<table><thead><tr><th>Name</th><th width="193">Type</th><th>Description</th></tr></thead><tbody><tr><td>Authorization<mark style="color:red;">*</mark></td><td>String</td><td>Bearer <strong><code>&#x3C;Custodian API Key></code></strong></td></tr><tr><td>Content-Type<mark style="color:red;">*</mark></td><td>String</td><td>application/json</td></tr></tbody></table>
+
+#### Path Parameters
+
+<table><thead><tr><th>Name</th><th width="193">Type</th><th>Description</th></tr></thead><tbody><tr><td><code>chainId</code><mark style="color:red;">*</mark></td><td><a href="../../resources/chain-id-formatting.md">CAIP-2 chain</a></td><td>The CAIP-2 chain ID. Be sure it is URL encoded.</td></tr></tbody></table>
+
+#### Example Request
+
+Be sure to replace the `[token]` with a Custodian API Key.
+
+```bash
+curl --request GET \
+  --url https://api.portalhq.io/api/v3/custodians/me/gas-sponsors/chains/solana%3AEtWTRABZaYq6iMfeYKouRu166VU2xqa1/usage \
+  --header 'Authorization: Bearer [token]'
+```
+
+#### Example Response
+
+{% tabs %}
+{% tab title="200: Success" %}
+```json
+{
+  "address": "75ZfLXXsSpycDvHTQuHnGQuYgd2ihb6Bu4viiCCQ7P4H", // Your gas sponsor's address
+  "chainId": "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1",
+  "usageData": [
+    {
+      "month": "June",
+      "year": 2025,
+      "usage": "0.011249279999999794",
+      "txCount": 921
+    },
+    {
+      "month": "May",
+      "year": 2025,
+      "usage": "0.01",
+      "txCount": 2
+    }
+  ],
+  "totalUsage": "0.021249279999999794",
+  "totalTxsSponsored": 923
 }
 ```
 {% endtab %}

@@ -942,7 +942,8 @@ If your API does not respond to `Signature Approval` alerts, your Portal clients
   },
   "metadata": {
     "custodianId": "custodianId",
-    "environmentId": "environmentId"
+    "environmentId": "environmentId",
+    "signatureApprovalMemo": "optional memo"
   },
   "type": "PRE_SIGN_V1"
 }
@@ -962,7 +963,8 @@ If your API does not respond to `Signature Approval` alerts, your Portal clients
   },
   "metadata": {
     "custodianId": "custodianId",
-    "environmentId": "environmentId"
+    "environmentId": "environmentId",
+    "signatureApprovalMemo": "optional memo"
   },
   "type": "PRE_SIGN_V1"
 }
@@ -982,7 +984,8 @@ If your API does not respond to `Signature Approval` alerts, your Portal clients
   },
   "metadata": {
     "custodianId": "custodianId",
-    "environmentId": "environmentId"
+    "environmentId": "environmentId",
+    "signatureApprovalMemo": "optional memo"
   },
   "type": "PRE_SIGN_V1"
 }
@@ -1002,7 +1005,8 @@ If your API does not respond to `Signature Approval` alerts, your Portal clients
   },
   "metadata": {
     "custodianId": "custodianId",
-    "environmentId": "environmentId"
+    "environmentId": "environmentId",
+    "signatureApprovalMemo": "optional memo"
   },
   "type": "PRE_SIGN_V1"
 }

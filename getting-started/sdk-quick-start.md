@@ -66,7 +66,8 @@ The basic Portal setup consists of three packages:
 These modules allow you to initialize `Portal` in your app.
 
 ```bash
-yarn add @portal-hq/core @portal-hq/keychain @portal-hq/gdrive-storage
+yarn add @portal-hq/core @portal-hq/keychain @portal-hq/gdrive-storage react-native-keychain
+cd ios & pod install # (FOR iOS use only)
 ```
 {% endtab %}
 {% endtabs %}

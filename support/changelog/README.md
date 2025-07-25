@@ -1,17 +1,6 @@
 ---
 description: What’s new? Check out the most recent updates and improvements to Portal.
 noRobotsIndex: true
-layout:
-  title:
-    visible: true
-  description:
-    visible: true
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: false
 ---
 
 # Changelog
